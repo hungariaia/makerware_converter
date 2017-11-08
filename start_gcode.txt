@@ -1,5 +1,4 @@
-start_gcode =
-"; -- START GCODE --
+; -- START GCODE --
 G21                     ;set units to millimetres
 G90                     ;set to absolute positioning
 M106 S0                 ;set fan speed to zero (turned off)
@@ -10,4 +9,4 @@ G92 E0                  ;zero the extruded length
 G1 E20 F200             ;extrude 20mm of feed stock
 G92 E0                  ;zero the extruded length again
 G1 F7200                ;set feedrate to 120 mm/s
-; -- end of START GCODE --"
+; -- end of START GCODE --

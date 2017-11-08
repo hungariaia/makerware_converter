@@ -1,18 +1,10 @@
-require_relative 'start_gcode'
-require_relative 'end_gcode'
 # require 'tempfile'
 # require 'fileutils'
-#
-# path = "Indian_Cheef.gcode"
-# temp_file = Tempfile.new('temp')
-#
-# File.open(path, 'r') do |file|
-#    file.each_line do |line|
-#      line.delete_start_gcode
 
 class Converter
-
-  @lines = File.read('test.gcode').split('\n')
+  def initialize
+    @converted_lines = []
+  end
 
   def delete_start_gcode
     line = ""
@@ -28,7 +20,15 @@ class Converter
   end
 
   def line_convert
-    @lines.each do |line|
+    lines = []
+    start_gcode = []
+    end_gcode = []
+    File.read('test.gcode').each_line{|line| lines << line}
+    File.read('start_gcode.txt').each_line{|line| start_gcode << line}
+    File.read('end_gcode.txt').each_line{|line| end_gcode << line}
+    converted_lines = []
+    lines.each do |line|
+
       line.gsub!("A","E") if line.include? "A"
 
       if line.start_with?("G1 X")
@@ -43,17 +43,25 @@ class Converter
         line_elements[2] = "Y" + y_real_value.to_s
 
         line = line_elements.join(" ")
-
+        converted_lines << line
       elsif line.start_with?("M127")
         line = "M107"
-
+        converted_lines << line
       elsif line.start_with?("M126")
         line = "M106"
-
+        converted_lines << line
       else
-        line = ""
+        next
+        #line = ""
+        #converted_lines << line
       end
-      p line
     end
+    newfile = File.new("test1.gcode","w")
+    newfile << start_gcode.join(" ")
+    newfile << converted_lines.join("\r\n")
+    newfile << end_gcode.join(" ")
+    newfile.close();
   end
 end
+
+Converter.new.line_convert
